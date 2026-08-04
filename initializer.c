@@ -7,6 +7,13 @@
 #define PENDSVLOWP (0xFF << 16)
 #define CTRL_OFFSET 0x8
 
+// specific to systick (control status reg)
+#define CSR (*(unsigned long *)0xE000E010)
+#define RVR (*(unsigned long *)0xE000E014)
+#define CVR (*(unsigned long *)0xE000E018)
+// bit 0 en, bit 1 send interupt, bit 2 use processor clock
+#define SYSTICKSET (0x7 << 0)
+
 void taskInit(struct Task *task, void (*taskHandle)(void))
 {
     unsigned long *stackTop = &task->stack[63];
@@ -41,6 +48,14 @@ __attribute__((naked)) void main_to_task(void (*taskH)(void))
         "mov pc, r0 \n");
 }
 
+void sysTickInit(void)
+{
+    // runs at 25Mhz, 1ms switch hence 25000000 / 1000 = 25000 - 1 (at 0)
+    RVR = 24999;
+    CVR = 0;
+    CSR |= SYSTICKSET;
+}
+
 void initializer(void)
 {
     runningTask = &task1;
@@ -52,6 +67,8 @@ void initializer(void)
 
     taskInit(&task1, task1Handle);
     taskInit(&task2, task2Handle);
+
+    sysTickInit();
 
     main_to_task(task1Handle);
 }

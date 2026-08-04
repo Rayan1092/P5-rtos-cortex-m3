@@ -32,7 +32,6 @@ void task1Handle(void)
     while (1)
     {
         sendChar('G');
-        yeild();
     }
 }
 
@@ -41,7 +40,6 @@ void task2Handle(void)
     while (1)
     {
         sendChar('R');
-        yeild();
     }
 }
 
@@ -69,4 +67,9 @@ __attribute__((naked)) void pendSVHandle(void)
         "pop {r4-r11, lr} \n"
 
         "bx lr \n");
+}
+
+void sysTickHandler(void)
+{
+    ICSR |= PENDSVSET;
 }

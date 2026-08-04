@@ -2,6 +2,7 @@ extern unsigned long _estack;
 
 void start_up(void);
 void pendSVHandle(void);
+void sysTickHandler(void);
 
 __attribute__((section(".isr_vector"))) void (*vector_table[16])(void) = {
     (void (*)(void))&_estack,
@@ -19,4 +20,4 @@ __attribute__((section(".isr_vector"))) void (*vector_table[16])(void) = {
     0,
     0,
     pendSVHandle,
-    0};
+    sysTickHandler};
