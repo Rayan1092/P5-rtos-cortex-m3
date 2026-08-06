@@ -31,7 +31,11 @@ void task1Handle(void)
 {
     while (1)
     {
+        mutexTake(&uartMutex);
         sendChar('G');
+        sendChar('G');
+        sendChar('G');
+        mutexReturn(&uartMutex);
     }
 }
 
@@ -39,7 +43,11 @@ void task2Handle(void)
 {
     while (1)
     {
+        mutexTake(&uartMutex);
         sendChar('R');
+        sendChar('R');
+        sendChar('R');
+        mutexReturn(&uartMutex);
     }
 }
 
@@ -54,6 +62,7 @@ void nextTask(void)
 __attribute__((naked)) void pendSVHandle(void)
 {
     asm volatile(
+        "clrex \n"
         "push {r4-r11, lr} \n"
         "ldr r0, =runningTask \n"
         "ldr r0, [r0] \n"
@@ -66,7 +75,7 @@ __attribute__((naked)) void pendSVHandle(void)
         "ldr sp, [r0] \n"
         "pop {r4-r11, lr} \n"
 
-        "bx lr \n");
+        "bx lr \n" ::: "memory");
 }
 
 void sysTickHandler(void)

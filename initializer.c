@@ -16,7 +16,7 @@
 
 void taskInit(struct Task *task, void (*taskHandle)(void))
 {
-    unsigned long *stackTop = &task->stack[63];
+    unsigned long *stackTop = &task->stack[255];
 
     *stackTop = 0x01000000;
     stackTop--;
