@@ -14,3 +14,7 @@ void mutexTake(volatile unsigned long *mutex);
 void mutexReturn(volatile unsigned long *mutex);
 
 extern volatile unsigned long uartMutex;
+
+void sendChar(char c);
+
+void hardFaultHandler(void);
