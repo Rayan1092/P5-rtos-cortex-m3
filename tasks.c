@@ -2,8 +2,6 @@
 
 #define STATUS_OFFSET 0x4
 #define STATUS_MASK (1 << 0)
-#define ICSR (*(unsigned long *)0xE000ED04)
-#define PENDSVSET (1 << 28)
 
 struct Task task1;
 struct Task task2;
@@ -64,6 +62,11 @@ void task3Handle(void)
 
 void nextTask(void)
 {
+    int numRuns = 0;
+
+    if (runningTask->state == RUNNINGT)
+        runningTask->state = READYT;
+
     while (1)
     {
         if (taskIndex > NUMTASKS - 1)
@@ -72,10 +75,21 @@ void nextTask(void)
         if (taskarr[taskIndex].state == READYT)
         {
             runningTask = &taskarr[taskIndex];
+            runningTask->state = RUNNINGT;
             taskIndex++;
             break;
         }
         taskIndex++;
+        numRuns++;
+
+        if (numRuns == NUMTASKS)
+        {
+            displayLabel("ERROR: Deadlock Detected");
+
+            while (1)
+            {
+            }
+        }
     }
 }
 

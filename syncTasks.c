@@ -18,7 +18,19 @@ void mutexTake(volatile unsigned long *mutex)
 
         if (!mval)
         {
-            asm volatile("clrex" ::: "memory");
+            asm volatile(
+                // ddisabling all interupts
+                "mov r0, #1 \n"
+                "msr primask, r0 \n"
+                "clrex \n" ::: "memory", "r0");
+
+            runningTask->awaitingMutex = mutex;
+            runningTask->state = BLOCKEDT;
+            ICSR |= PENDSVSET;
+
+            asm volatile(
+                "mov r0, #0 \n"
+                "msr primask, r0 \n" ::: "memory", "r0");
             continue;
         }
 
@@ -33,7 +45,26 @@ void mutexTake(volatile unsigned long *mutex)
 
 void mutexReturn(volatile unsigned long *mutex)
 {
-    asm volatile("dmb" ::: "memory");
+    asm volatile(
+        "dmb \n"
+        "mov r0, #1 \n"
+        "msr primask, r0 \n"
+        :
+        :
+        : "memory", "r0");
+
+    for (int i = 0; i < NUMTASKS; i++)
+    {
+        if (taskarr[i].state == BLOCKEDT && taskarr[i].awaitingMutex == mutex)
+        {
+            taskarr[i].state = READYT;
+            taskarr[i].awaitingMutex = 0;
+        }
+    }
 
     *mutex = 1;
+
+    asm volatile(
+        "mov r0, #0 \n"
+        "msr primask, r0 \n" ::: "memory", "r0");
 }
