@@ -17,7 +17,10 @@ void mutexTake(volatile unsigned long *mutex)
             : "memory");
 
         if (!mval)
+        {
+            asm volatile("clrex" ::: "memory");
             continue;
+        }
 
         asm volatile(
             "strex %0, %1, [%2]"

@@ -7,8 +7,7 @@
 
 struct Task task1;
 struct Task task2;
-
-struct Task *runningTask;
+struct Task task3;
 
 void sendChar(char c)
 {
@@ -51,12 +50,33 @@ void task2Handle(void)
     }
 }
 
+void task3Handle(void)
+{
+    while (1)
+    {
+        mutexTake(&uartMutex);
+        sendChar('W');
+        sendChar('W');
+        sendChar('W');
+        mutexReturn(&uartMutex);
+    }
+}
+
 void nextTask(void)
 {
-    if (runningTask == &task1)
-        runningTask = &task2;
-    else
-        runningTask = &task1;
+    while (1)
+    {
+        if (taskIndex > NUMTASKS - 1)
+            taskIndex = 0;
+
+        if (taskarr[taskIndex].state == READYT)
+        {
+            runningTask = &taskarr[taskIndex];
+            taskIndex++;
+            break;
+        }
+        taskIndex++;
+    }
 }
 
 __attribute__((naked)) void pendSVHandle(void)

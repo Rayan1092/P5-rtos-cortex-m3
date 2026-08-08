@@ -2,26 +2,31 @@
 
 #define PC_MASK 0xFFFFFFFE
 #define SHPR3 (*(volatile unsigned long *)0xE000ED20)
-
 // pendsv low priority
 #define PENDSVLOWP (0xFF << 16)
 #define CTRL_OFFSET 0x8
 
 // specific to systick (control status reg)
-#define CSR (*(unsigned long *)0xE000E010)
-#define RVR (*(unsigned long *)0xE000E014)
-#define CVR (*(unsigned long *)0xE000E018)
+#define CSR (*(volatile unsigned long *)0xE000E010)
+#define RVR (*(volatile unsigned long *)0xE000E014)
+#define CVR (*(volatile unsigned long *)0xE000E018)
 // bit 0 en, bit 1 send interupt, bit 2 use processor clock
 #define SYSTICKSET (0x7 << 0)
 
-void taskInit(struct Task *task, void (*taskHandle)(void))
+int taskIndex = 0;
+struct Task taskarr[NUMTASKS];
+struct Task *runningTask;
+
+void taskInit(struct Task *task)
 {
-    unsigned long *stackTop = &task->stack[255];
+    task->state = READYT;
+
+    unsigned long *stackTop = &task->stack[63];
 
     *stackTop = 0x01000000;
     stackTop--;
 
-    *stackTop = ((unsigned long)taskHandle) & PC_MASK;
+    *stackTop = ((unsigned long)task->taskHandle) & PC_MASK;
     stackTop--;
 
     for (int i = 0; i < 15; i++)
@@ -58,17 +63,23 @@ void sysTickInit(void)
 
 void initializer(void)
 {
-    runningTask = &task1;
+    taskarr[0].taskHandle = task1Handle;
+    taskarr[1].taskHandle = task2Handle;
+    taskarr[2].taskHandle = task3Handle;
+
+    for (int i = 0; i < NUMTASKS; i++)
+    {
+        taskInit(&taskarr[i]);
+    }
+
+    runningTask = &(taskarr[0]);
 
     volatile unsigned long *ctrl = (unsigned long *)(UARTBASE + CTRL_OFFSET);
     *ctrl |= (1 << 0);
 
     SHPR3 |= PENDSVLOWP;
 
-    taskInit(&task1, task1Handle);
-    taskInit(&task2, task2Handle);
-
     sysTickInit();
 
-    main_to_task(task1Handle);
+    main_to_task(taskarr[0].taskHandle);
 }
