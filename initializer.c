@@ -1,6 +1,5 @@
 #include "defs.h"
 
-#define PC_MASK 0xFFFFFFFE
 #define SHPR3 (*(volatile unsigned long *)0xE000ED20)
 // pendsv low priority
 #define PENDSVLOWP (0xFF << 16)
@@ -16,32 +15,6 @@
 int taskIndex = 0;
 struct Task taskarr[NUMTASKS];
 struct Task *runningTask;
-
-void taskInit(struct Task *task)
-{
-    task->state = READYT;
-
-    unsigned long *stackTop = &task->stack[63];
-
-    *stackTop = 0x01000000;
-    stackTop--;
-
-    *stackTop = ((unsigned long)task->taskHandle) & PC_MASK;
-    stackTop--;
-
-    for (int i = 0; i < 15; i++)
-    {
-        if (i == 6)
-            *stackTop = 0xFFFFFFF9;
-        else
-            *stackTop = 0;
-
-        if (i != 14)
-            stackTop--;
-    }
-
-    task->sp = stackTop;
-}
 
 __attribute__((naked)) void main_to_task(void (*taskH)(void))
 {
@@ -79,7 +52,19 @@ void initializer(void)
 
     SHPR3 |= PENDSVLOWP;
 
-    sysTickInit();
+    heapInit();
+    void *testFree1 = myMalloc(40);
+    void *testFree2 = myMalloc(40);
+    void *testFree3 = myMalloc(40);
+    readHeaders();
+    myFree(testFree2);
+    readHeaders();
+    myFree(testFree1);
+    readHeaders();
+    myFree(testFree3);
+    readHeaders();
 
-    main_to_task(taskarr[0].taskHandle);
+    // sysTickInit();
+
+    // main_to_task(taskarr[0].taskHandle);
 }

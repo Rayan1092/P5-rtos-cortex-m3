@@ -3,6 +3,7 @@
 #define PENDSVSET (1 << 28)
 #define NULLT '\0'
 #define NUMTASKS 3
+#define PC_MASK 0xFFFFFFFE
 
 void task1Handle(void);
 void task2Handle(void);
@@ -13,6 +14,10 @@ void mutexReturn(volatile unsigned long *mutex);
 void sendChar(char c);
 void hardFaultHandler(void);
 void displayStats();
+void heapInit(void);
+void readHeaders(void);
+void *myMalloc(unsigned long size);
+void myFree(void *ptr);
 
 enum taskState
 {
@@ -36,3 +41,5 @@ extern int taskIndex;
 
 void displayLabel(const char *label);
 void displayLine(void);
+void displayHex(unsigned long num);
+void taskInit(struct Task *task);

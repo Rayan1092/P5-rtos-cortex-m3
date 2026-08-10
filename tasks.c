@@ -26,14 +26,14 @@ void yeild(void)
 
 void task1Handle(void)
 {
-    while (1)
-    {
-        mutexTake(&uartMutex);
-        sendChar('G');
-        sendChar('G');
-        sendChar('G');
-        mutexReturn(&uartMutex);
-    }
+    // while (1)
+    // {
+    mutexTake(&uartMutex);
+    sendChar('G');
+    sendChar('G');
+    sendChar('G');
+    mutexReturn(&uartMutex);
+    // }
 }
 
 void task2Handle(void)
@@ -91,6 +91,32 @@ void nextTask(void)
             }
         }
     }
+}
+
+void taskInit(struct Task *task)
+{
+    task->state = READYT;
+
+    unsigned long *stackTop = &task->stack[63];
+
+    *stackTop = 0x01000000;
+    stackTop--;
+
+    *stackTop = ((unsigned long)task->taskHandle) & PC_MASK;
+    stackTop--;
+
+    for (int i = 0; i < 15; i++)
+    {
+        if (i == 6)
+            *stackTop = 0xFFFFFFF9;
+        else
+            *stackTop = 0;
+
+        if (i != 14)
+            stackTop--;
+    }
+
+    task->sp = stackTop;
 }
 
 __attribute__((naked)) void pendSVHandle(void)

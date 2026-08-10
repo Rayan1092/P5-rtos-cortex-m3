@@ -52,6 +52,8 @@ void displayBinary(unsigned long num)
 // r0 already loaded with sp
 void displayStats(unsigned long *frame)
 {
+    displayLabel("ERROR: HARDFAULT HANDLER TRIGGERED \n");
+
     unsigned long PC = frame[6];
     displayLabel("PC=0x");
     displayHex(PC);
