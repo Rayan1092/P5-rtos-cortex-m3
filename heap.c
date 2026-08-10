@@ -45,6 +45,8 @@ void heapInit(void)
 
 void *myMalloc(unsigned long size)
 {
+    mutexTake(&heapMutex);
+
     struct Header *currHeapheader = (struct Header *)heapStart;
 
     while (size % 4 != 0)
@@ -76,6 +78,7 @@ void *myMalloc(unsigned long size)
                 currHeapheader->payloadSize = ogPayloadSize;
             }
 
+            mutexReturn(&heapMutex);
             return (void *)(((unsigned char *)OGHHA) + HEADERSIZE);
         }
 
@@ -84,11 +87,15 @@ void *myMalloc(unsigned long size)
             currHeapheader = (struct Header *)(((unsigned char *)currHeapheader) + currHeapheader->payloadSize + HEADERSIZE);
         }
     }
+    mutexReturn(&heapMutex);
     return 0;
 }
 
 void readHeaders(void)
 {
+    mutexTake(&uartMutex);
+    mutexTake(&heapMutex);
+
     struct Header *currHeader = (struct Header *)heapStart;
     struct Header *prevHeader;
 
@@ -115,10 +122,15 @@ void readHeaders(void)
     displayLine();
     displayLabel("HEAP HEADERS DISPLAYED");
     displayLine();
+
+    mutexReturn(&uartMutex);
+    mutexReturn(&heapMutex);
 }
 
 void myFree(void *ptr)
 {
+    mutexTake(&heapMutex);
+
     // todo base header
     struct Header *baseH;
     int totalSize;
@@ -142,7 +154,7 @@ void myFree(void *ptr)
 
             currHeader = (struct Header *)(((unsigned char *)currHeader) + currpayloadSize + HEADERSIZE);
 
-            while (currHeader->state == FREEMEM)
+            while ((unsigned char *)currHeader < heapEnd && currHeader->state == FREEMEM)
             {
                 currpayloadSize = currHeader->payloadSize;
 
@@ -160,4 +172,5 @@ void myFree(void *ptr)
             currHeader = (struct Header *)(((unsigned char *)currHeader) + currpayloadSize + HEADERSIZE);
         }
     }
+    mutexReturn(&heapMutex);
 }

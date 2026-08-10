@@ -53,18 +53,8 @@ void initializer(void)
     SHPR3 |= PENDSVLOWP;
 
     heapInit();
-    void *testFree1 = myMalloc(40);
-    void *testFree2 = myMalloc(40);
-    void *testFree3 = myMalloc(40);
-    readHeaders();
-    myFree(testFree2);
-    readHeaders();
-    myFree(testFree1);
-    readHeaders();
-    myFree(testFree3);
-    readHeaders();
 
-    // sysTickInit();
+    sysTickInit();
 
-    // main_to_task(taskarr[0].taskHandle);
+    main_to_task(taskarr[0].taskHandle);
 }

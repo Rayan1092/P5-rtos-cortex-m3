@@ -3,9 +3,8 @@
 #define STATUS_OFFSET 0x4
 #define STATUS_MASK (1 << 0)
 
-struct Task task1;
-struct Task task2;
-struct Task task3;
+unsigned long done1 = 0;
+unsigned long done2 = 0;
 
 void sendChar(char c)
 {
@@ -26,37 +25,36 @@ void yeild(void)
 
 void task1Handle(void)
 {
-    // while (1)
-    // {
-    mutexTake(&uartMutex);
-    sendChar('G');
-    sendChar('G');
-    sendChar('G');
-    mutexReturn(&uartMutex);
-    // }
+    void *test1 = myMalloc(40);
+    readHeaders();
+    myFree(test1);
+    done1 = 1;
+
+    while (1)
+    {
+    }
 }
 
 void task2Handle(void)
 {
+    void *test2 = myMalloc(40);
+    readHeaders();
+    myFree(test2);
+    done2 = 1;
+
     while (1)
     {
-        mutexTake(&uartMutex);
-        sendChar('R');
-        sendChar('R');
-        sendChar('R');
-        mutexReturn(&uartMutex);
     }
 }
 
 void task3Handle(void)
 {
+    while (!(done1 && done2))
+    {
+    }
+    readHeaders();
     while (1)
     {
-        mutexTake(&uartMutex);
-        sendChar('W');
-        sendChar('W');
-        sendChar('W');
-        mutexReturn(&uartMutex);
     }
 }
 

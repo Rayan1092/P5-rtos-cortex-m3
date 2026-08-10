@@ -1,6 +1,7 @@
 #include "defs.h"
 
 volatile unsigned long uartMutex = 1;
+volatile unsigned long heapMutex = 1;
 
 void mutexTake(volatile unsigned long *mutex)
 {
@@ -26,11 +27,12 @@ void mutexTake(volatile unsigned long *mutex)
 
             runningTask->awaitingMutex = mutex;
             runningTask->state = BLOCKEDT;
-            ICSR |= PENDSVSET;
+            yeild();
 
             asm volatile(
                 "mov r0, #0 \n"
-                "msr primask, r0 \n" ::: "memory", "r0");
+                "msr primask, r0 \n" ::: "memory",
+                                         "r0");
             continue;
         }
 

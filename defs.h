@@ -18,6 +18,7 @@ void heapInit(void);
 void readHeaders(void);
 void *myMalloc(unsigned long size);
 void myFree(void *ptr);
+void yeild(void);
 
 enum taskState
 {
@@ -35,7 +36,7 @@ struct Task
     volatile unsigned long *awaitingMutex;
 };
 
-extern volatile unsigned long uartMutex;
+extern volatile unsigned long uartMutex, heapMutex;
 extern struct Task *runningTask, taskarr[NUMTASKS];
 extern int taskIndex;
 
