@@ -3,7 +3,6 @@
 #define SHPR3 (*(volatile unsigned long *)0xE000ED20)
 // pendsv low priority
 #define PENDSVLOWP (0xFF << 16)
-#define CTRL_OFFSET 0x8
 
 // specific to systick (control status reg)
 #define CSR (*(volatile unsigned long *)0xE000E010)
@@ -34,7 +33,12 @@ void sysTickInit(void)
     CSR |= SYSTICKSET;
 }
 
-void initializer(void)
+void pendSVInit(void)
+{
+    SHPR3 |= PENDSVLOWP;
+}
+
+void taskSetup(void)
 {
     taskarr[0].taskHandle = task1Handle;
     taskarr[1].taskHandle = task2Handle;
@@ -46,15 +50,15 @@ void initializer(void)
     }
 
     runningTask = &(taskarr[0]);
+}
 
-    volatile unsigned long *ctrl = (unsigned long *)(UARTBASE + CTRL_OFFSET);
-    *ctrl |= (1 << 0);
+void initializer(void)
+{
 
-    SHPR3 |= PENDSVLOWP;
-
+    taskSetup();
     heapInit();
-
+    pendSVInit();
+    uartInit();
     sysTickInit();
-
     main_to_task(taskarr[0].taskHandle);
 }

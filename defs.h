@@ -1,4 +1,4 @@
-#define UARTBASE ((volatile unsigned char *)0x40004000)
+
 #define ICSR (*(unsigned long *)0xE000ED04)
 #define PENDSVSET (1 << 28)
 #define NULLT '\0'
@@ -19,6 +19,8 @@ void readHeaders(void);
 void *myMalloc(unsigned long size);
 void myFree(void *ptr);
 void yeild(void);
+void uartTXHandle(void);
+void uartInit(void);
 
 enum taskState
 {

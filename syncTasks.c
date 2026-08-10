@@ -31,8 +31,7 @@ void mutexTake(volatile unsigned long *mutex)
 
             asm volatile(
                 "mov r0, #0 \n"
-                "msr primask, r0 \n" ::: "memory",
-                                         "r0");
+                "msr primask, r0 \n" ::: "memory", "r0");
             continue;
         }
 

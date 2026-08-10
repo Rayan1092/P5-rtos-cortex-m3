@@ -1,23 +1,5 @@
 #include "defs.h"
 
-#define STATUS_OFFSET 0x4
-#define STATUS_MASK (1 << 0)
-
-unsigned long done1 = 0;
-unsigned long done2 = 0;
-
-void sendChar(char c)
-{
-    unsigned long *data = (unsigned long *)UARTBASE;
-    unsigned long *status = (unsigned long *)(UARTBASE + STATUS_OFFSET);
-
-    while (*status & STATUS_MASK)
-    {
-    }
-
-    *data = c;
-}
-
 void yeild(void)
 {
     ICSR |= PENDSVSET;
@@ -25,36 +7,25 @@ void yeild(void)
 
 void task1Handle(void)
 {
-    void *test1 = myMalloc(40);
-    readHeaders();
-    myFree(test1);
-    done1 = 1;
-
     while (1)
     {
+        sendChar('A');
     }
 }
 
 void task2Handle(void)
 {
-    void *test2 = myMalloc(40);
-    readHeaders();
-    myFree(test2);
-    done2 = 1;
-
     while (1)
     {
+        sendChar('B');
     }
 }
 
 void task3Handle(void)
 {
-    while (!(done1 && done2))
-    {
-    }
-    readHeaders();
     while (1)
     {
+        sendChar('C');
     }
 }
 
