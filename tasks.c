@@ -8,25 +8,50 @@ void yeild(void)
 
 void task1Handle(void)
 {
+    int counter = 0;
+    int taken = 0;
     while (1)
     {
+        if (!taken)
+            mutexTake(&uartMutex);
+
+        taken = 1;
         sendChar('A');
+        if (counter >= 100)
+            mutexReturn(&uartMutex);
+        counter++;
     }
 }
 
 void task2Handle(void)
 {
+    int counter = 0;
     while (1)
     {
+        if (counter >= 100)
+        {
+            runningTask->state = BLOCKEDT;
+        }
         sendChar('B');
+        counter++;
     }
 }
 
 void task3Handle(void)
 {
+    int counter = 0;
+    int taken = 0;
     while (1)
     {
+        if (!taken)
+            mutexTake(&uartMutex);
+        taken = 1;
+
         sendChar('C');
+
+        if (counter >= 100)
+            mutexReturn(&uartMutex);
+        counter++;
     }
 }
 
@@ -71,6 +96,7 @@ void nextTask(void)
         return;
     }
 
+    displayLine();
     displayLabel("ERROR: Deadlock Detected");
 
     while (1)

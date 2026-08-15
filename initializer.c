@@ -17,6 +17,7 @@ struct Task *runningTask;
 
 __attribute__((naked)) void main_to_task(void (*taskH)(void))
 {
+
     asm volatile(
         "ldr r1, =runningTask \n"
         "ldr r1, [r1] \n"
@@ -50,7 +51,7 @@ void taskSetup(void)
         taskarr[i].priority = i;
     }
 
-    runningTask = &(taskarr[0]);
+    runningTask = &(taskarr[2]);
 }
 
 void initializer(void)
@@ -61,5 +62,5 @@ void initializer(void)
     pendSVInit();
     uartInit();
     sysTickInit();
-    main_to_task(taskarr[0].taskHandle);
+    main_to_task(taskarr[2].taskHandle);
 }

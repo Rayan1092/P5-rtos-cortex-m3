@@ -35,6 +35,9 @@ void mutexTake(volatile unsigned long *mutex)
             : "r"(0UL), "r"(mutex)
             : "memory");
 
+        if (!failed)
+            displayLabel("Mutex Taken");
+
     } while (failed);
 }
 
