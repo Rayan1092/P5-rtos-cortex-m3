@@ -4,6 +4,7 @@
 #define STATUS_OFFSET 0x4
 #define CTRL_OFFSET 0x8
 #define INTCLEAR_OFFSET 0xC
+// interupt clear
 #define INTCLEAR (*((volatile unsigned long *)(UARTBASE + INTCLEAR_OFFSET)))
 #define CLEARTXINT (1 << 0)
 #define CTRL (*((volatile unsigned long *)(UARTBASE + CTRL_OFFSET)))
@@ -12,7 +13,7 @@
 #define TXIEN (0x5 << 0)
 #define STATUS_MASK (1 << 0)
 #define IRQ 1
-// for the nvic allowing uart peripheral through (interupt set enable reg0)
+// NVIC allowing uart peripheral through (interupt set enable reg0)
 #define ISER0 (*(volatile unsigned long *)0xE000E100)
 #define UARTSTATUS (*((volatile unsigned long *)(UARTBASE + STATUS_OFFSET)))
 #define BUFFERSIZE 128

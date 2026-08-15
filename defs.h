@@ -46,3 +46,5 @@ void displayLabel(const char *label);
 void displayLine(void);
 void displayHex(unsigned long num);
 void taskInit(struct Task *task);
+void enableInterupts(void);
+void disableInterupts(void);

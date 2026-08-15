@@ -19,19 +19,13 @@ void mutexTake(volatile unsigned long *mutex)
 
         if (!mval)
         {
-            asm volatile(
-                // ddisabling all interupts
-                "mov r0, #1 \n"
-                "msr primask, r0 \n"
-                "clrex \n" ::: "memory", "r0");
+            disableInterupts();
 
             runningTask->awaitingMutex = mutex;
             runningTask->state = BLOCKEDT;
             yeild();
 
-            asm volatile(
-                "mov r0, #0 \n"
-                "msr primask, r0 \n" ::: "memory", "r0");
+            enableInterupts();
             continue;
         }
 
@@ -46,13 +40,7 @@ void mutexTake(volatile unsigned long *mutex)
 
 void mutexReturn(volatile unsigned long *mutex)
 {
-    asm volatile(
-        "dmb \n"
-        "mov r0, #1 \n"
-        "msr primask, r0 \n"
-        :
-        :
-        : "memory", "r0");
+    disableInterupts();
 
     for (int i = 0; i < NUMTASKS; i++)
     {
@@ -65,7 +53,5 @@ void mutexReturn(volatile unsigned long *mutex)
 
     *mutex = 1;
 
-    asm volatile(
-        "mov r0, #0 \n"
-        "msr primask, r0 \n" ::: "memory", "r0");
+    enableInterupts();
 }
