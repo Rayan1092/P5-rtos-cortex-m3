@@ -1,4 +1,5 @@
 #include "defs.h"
+#define HIGHEST_PRIORITY 0
 
 void yeild(void)
 {
@@ -32,33 +33,48 @@ void task3Handle(void)
 void nextTask(void)
 {
     int numRuns = 0;
+    unsigned long highestP = 100;
+    int highestPIndex = -1;
 
     if (runningTask->state == RUNNINGT)
         runningTask->state = READYT;
 
-    while (1)
+    while (numRuns < NUMTASKS)
     {
+
         if (taskIndex > NUMTASKS - 1)
             taskIndex = 0;
 
-        if (taskarr[taskIndex].state == READYT)
+        if (taskarr[taskIndex].priority < highestP && taskarr[taskIndex].state == READYT)
         {
-            runningTask = &taskarr[taskIndex];
-            runningTask->state = RUNNINGT;
-            taskIndex++;
-            break;
-        }
-        taskIndex++;
-        numRuns++;
+            highestPIndex = taskIndex;
+            highestP = taskarr[taskIndex].priority;
 
-        if (numRuns == NUMTASKS)
-        {
-            displayLabel("ERROR: Deadlock Detected");
-
-            while (1)
+            if (taskarr[taskIndex].priority == HIGHEST_PRIORITY)
             {
+                runningTask = &taskarr[taskIndex];
+                taskarr[taskIndex].state = RUNNINGT;
+                taskIndex++;
+                return;
             }
         }
+
+        taskIndex++;
+        numRuns++;
+    }
+
+    if (highestPIndex != -1)
+    {
+        runningTask = &taskarr[highestPIndex];
+        taskarr[highestPIndex].state = RUNNINGT;
+        taskIndex = highestPIndex + 1;
+        return;
+    }
+
+    displayLabel("ERROR: Deadlock Detected");
+
+    while (1)
+    {
     }
 }
 

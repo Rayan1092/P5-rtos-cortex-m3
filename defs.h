@@ -36,6 +36,7 @@ struct Task
     enum taskState state;
     void (*taskHandle)(void);
     volatile unsigned long *awaitingMutex;
+    unsigned long priority;
 };
 
 extern volatile unsigned long uartMutex, heapMutex;
@@ -46,5 +47,5 @@ void displayLabel(const char *label);
 void displayLine(void);
 void displayHex(unsigned long num);
 void taskInit(struct Task *task);
-void enableInterupts(void);
-void disableInterupts(void);
+void enableInterrupts(void);
+void disableInterrupts(void);

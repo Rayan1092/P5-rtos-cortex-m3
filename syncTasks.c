@@ -19,13 +19,13 @@ void mutexTake(volatile unsigned long *mutex)
 
         if (!mval)
         {
-            disableInterupts();
+            disableInterrupts();
 
             runningTask->awaitingMutex = mutex;
             runningTask->state = BLOCKEDT;
             yeild();
 
-            enableInterupts();
+            enableInterrupts();
             continue;
         }
 
@@ -40,7 +40,7 @@ void mutexTake(volatile unsigned long *mutex)
 
 void mutexReturn(volatile unsigned long *mutex)
 {
-    disableInterupts();
+    disableInterrupts();
 
     for (int i = 0; i < NUMTASKS; i++)
     {
@@ -53,5 +53,5 @@ void mutexReturn(volatile unsigned long *mutex)
 
     *mutex = 1;
 
-    enableInterupts();
+    enableInterrupts();
 }

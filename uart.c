@@ -33,14 +33,14 @@ unsigned long spaceAvaliable(void)
     return (wLapVal == rLapVal && writeIndex >= readIndex) || (wLapVal != rLapVal && writeIndex < readIndex);
 }
 
-void disableInterups(void)
+void disableInterrupts(void)
 {
     asm volatile(
         "mov r0, #1 \n"
         "msr primask, r0 \n" ::: "memory", "r0");
 }
 
-void enableInterupts(void)
+void enableInterrupts(void)
 {
     asm volatile(
         "mov r0, #0 \n"
@@ -51,14 +51,14 @@ void sendChar(char c)
 {
     while (1)
     {
-        disableInterups();
+        disableInterrupts();
 
         if (directSendFlag)
         {
             DATA = c;
             directSendFlag = 0;
 
-            enableInterupts();
+            enableInterrupts();
             break;
         }
         else if (spaceAvaliable())
@@ -72,12 +72,12 @@ void sendChar(char c)
                 wLapVal = !wLapVal;
                 writeIndex = 0;
             }
-            enableInterupts();
+            enableInterrupts();
 
             break;
         }
         else
-            enableInterupts();
+            enableInterrupts();
 
         while (!spaceAvaliable())
         {
