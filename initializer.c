@@ -48,7 +48,8 @@ void taskSetup(void)
     for (int i = 0; i < NUMTASKS; i++)
     {
         taskInit(&taskarr[i]);
-        taskarr[i].priority = i;
+        taskarr[i].ogpriority = i;
+        taskarr[i].epriority = i;
     }
 
     runningTask = &(taskarr[2]);

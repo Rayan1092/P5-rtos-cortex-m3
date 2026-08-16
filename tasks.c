@@ -70,12 +70,12 @@ void nextTask(void)
         if (taskIndex > NUMTASKS - 1)
             taskIndex = 0;
 
-        if (taskarr[taskIndex].priority < highestP && taskarr[taskIndex].state == READYT)
+        if (taskarr[taskIndex].epriority < highestP && taskarr[taskIndex].state == READYT)
         {
             highestPIndex = taskIndex;
-            highestP = taskarr[taskIndex].priority;
+            highestP = taskarr[taskIndex].epriority;
 
-            if (taskarr[taskIndex].priority == HIGHEST_PRIORITY)
+            if (taskarr[taskIndex].epriority == HIGHEST_PRIORITY)
             {
                 runningTask = &taskarr[taskIndex];
                 taskarr[taskIndex].state = RUNNINGT;

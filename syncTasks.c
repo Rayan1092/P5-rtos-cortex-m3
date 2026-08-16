@@ -1,9 +1,9 @@
 #include "defs.h"
 
-volatile unsigned long uartMutex = 1;
-volatile unsigned long heapMutex = 1;
+volatile struct Mutex uartMutex = {1, 0};
+volatile struct Mutex heapMutex = {1, 0};
 
-void mutexTake(volatile unsigned long *mutex)
+void mutexTake(volatile struct Mutex *mutex)
 {
 
     unsigned long failed = 1;
@@ -23,8 +23,12 @@ void mutexTake(volatile unsigned long *mutex)
 
             runningTask->awaitingMutex = mutex;
             runningTask->state = BLOCKEDT;
-            yeild();
 
+            if (mutex->holder != 0)
+                if (mutex->holder->epriority > runningTask->epriority)
+                    mutex->holder->epriority = runningTask->epriority;
+
+            yeild();
             enableInterrupts();
             continue;
         }
@@ -36,12 +40,15 @@ void mutexTake(volatile unsigned long *mutex)
             : "memory");
 
         if (!failed)
+        {
+            mutex->holder = runningTask;
             displayLabel("Mutex Taken");
+        }
 
     } while (failed);
 }
 
-void mutexReturn(volatile unsigned long *mutex)
+void mutexReturn(volatile struct Mutex *mutex)
 {
     disableInterrupts();
 
@@ -54,7 +61,9 @@ void mutexReturn(volatile unsigned long *mutex)
         }
     }
 
-    *mutex = 1;
+    mutex->val = 1;
+    mutex->holder = 0;
+    runningTask->epriority = runningTask->ogpriority;
 
     enableInterrupts();
 }
