@@ -44,6 +44,7 @@ void taskSetup(void)
     taskarr[0].taskHandle = task1Handle;
     taskarr[1].taskHandle = task2Handle;
     taskarr[2].taskHandle = task3Handle;
+    taskarr[3].taskHandle = task4Handle;
 
     for (int i = 0; i < NUMTASKS; i++)
     {

@@ -1,3 +1,5 @@
+#include "defs.h"
+
 // reset and clock control, control reg
 #define RCC_CR (*((volatile unsigned long *)0x40021000))
 // high speed external on
@@ -30,10 +32,21 @@
 #define IOPAEN (1 << 2)
 #define IOPCEN (1 << 4)
 #define USARTEN1 (1 << 14)
+// configuration reg high offset
+#define CRHOFFSET 0x4
+// GPIO C Configurable register high (CRH)
+#define GPIOCCRH (*(volatile unsigned long *)(GPIOCBASE + CRHOFFSET))
 
 void apb2Setup(void)
 {
     RCC_APB2ENR |= IOPAEN | IOPCEN | USARTEN1;
+}
+
+void ledInit(void)
+{
+    // 00 (push pull), (01) output 10MHZ
+    GPIOCCRH &= ~(0xF << 20);
+    GPIOCCRH |= (1 << 20);
 }
 
 void clockInit(void)
@@ -56,7 +69,7 @@ void clockInit(void)
 
     // set to HSE
     RCC_CFGR |= (1 << PLLSRC);
-    //  x 9 offset by 2
+    //  x 9 offset by 2 (72MHZ)
     RCC_CFGR |= (0x7 << PLLMUL);
 
     RCC_CR |= (1 << PLLON);

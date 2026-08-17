@@ -55,6 +55,18 @@ void task3Handle(void)
     }
 }
 
+void task4Handle(void)
+{
+    while (1)
+    {
+        GPIOCODR ^= (1 << 13);
+
+        for (volatile unsigned long i = 0; i < 1000000; i++)
+        {
+        }
+    }
+}
+
 void nextTask(void)
 {
     int numRuns = 0;
