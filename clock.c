@@ -25,6 +25,16 @@
 #define PLL 0x2
 // SW status
 #define SWS (0x3 << 2)
+#define RCC_APB2ENR (*(volatile unsigned long *)0x40021018)
+// enable gpio port A, C and USART1
+#define IOPAEN (1 << 2)
+#define IOPCEN (1 << 4)
+#define USARTEN1 (1 << 14)
+
+void apb2Setup(void)
+{
+    RCC_APB2ENR |= IOPAEN | IOPCEN | USARTEN1;
+}
 
 void clockInit(void)
 {
@@ -61,4 +71,6 @@ void clockInit(void)
     while ((RCC_CFGR & SWS) != 0x8)
     {
     }
+
+    apb2Setup();
 }
