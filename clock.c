@@ -32,8 +32,7 @@
 #define IOPAEN (1 << 2)
 #define IOPCEN (1 << 4)
 #define USARTEN1 (1 << 14)
-// configuration reg high offset
-#define CRHOFFSET 0x4
+
 // GPIO C Configurable register high (CRH)
 #define GPIOCCRH (*(volatile unsigned long *)(GPIOCBASE + CRHOFFSET))
 

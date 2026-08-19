@@ -16,7 +16,6 @@
 // NVIC allowing uart peripheral through (interupt set enable reg0)
 #define ISER0 (*(volatile unsigned long *)0xE000E100)
 #define UARTSTATUS (*((volatile unsigned long *)(UARTBASE + STATUS_OFFSET)))
-#define BUFFERSIZE 128
 
 volatile unsigned char ringbuffer[BUFFERSIZE];
 

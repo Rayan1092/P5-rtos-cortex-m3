@@ -7,6 +7,9 @@
 #define GPIOCBASE ((volatile unsigned char *)0x40011000)
 #define ODROFFSET 0xC
 #define GPIOCODR (*(volatile unsigned long *)(GPIOCBASE + ODROFFSET))
+// configuration reg high offset
+#define CRHOFFSET 0x4
+#define BUFFERSIZE 128
 
 void task1Handle(void);
 void task2Handle(void);
@@ -22,6 +25,7 @@ void myFree(void *ptr);
 void yeild(void);
 void uartTXHandle(void);
 void uartInit(void);
+void usartTXEHandle(void);
 
 enum taskState
 {
