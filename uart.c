@@ -32,20 +32,6 @@ unsigned long spaceAvaliable(void)
     return (wLapVal == rLapVal && writeIndex >= readIndex) || (wLapVal != rLapVal && writeIndex < readIndex);
 }
 
-void disableInterrupts(void)
-{
-    asm volatile(
-        "mov r0, #1 \n"
-        "msr primask, r0 \n" ::: "memory", "r0");
-}
-
-void enableInterrupts(void)
-{
-    asm volatile(
-        "mov r0, #0 \n"
-        "msr primask, r0 \n" ::: "memory", "r0");
-}
-
 void sendChar(char c)
 {
     while (1)

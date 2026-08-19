@@ -1,2 +1,3 @@
-firmware.elf
+firmware_qemu.elf
+firmware_stm32.elf
 *.o

@@ -3,6 +3,20 @@
 volatile struct Mutex uartMutex = {1, 0};
 volatile struct Mutex heapMutex = {1, 0};
 
+void disableInterrupts(void)
+{
+    asm volatile(
+        "mov r0, #1 \n"
+        "msr primask, r0 \n" ::: "memory", "r0");
+}
+
+void enableInterrupts(void)
+{
+    asm volatile(
+        "mov r0, #0 \n"
+        "msr primask, r0 \n" ::: "memory", "r0");
+}
+
 void mutexTake(volatile struct Mutex *mutex)
 {
 
