@@ -26,6 +26,9 @@ void yeild(void);
 void uartTXHandle(void);
 void uartInit(void);
 void usartTXEHandle(void);
+void usartInit(void);
+void clockInit(void);
+void ledInit(void);
 
 enum taskState
 {
@@ -56,7 +59,6 @@ struct Task
 extern volatile struct Mutex uartMutex, heapMutex;
 extern struct Task *runningTask, taskarr[NUMTASKS];
 extern int taskIndex;
-extern unsigned long *GPIOCODR;
 
 void mutexTake(volatile struct Mutex *mutex);
 void mutexReturn(volatile struct Mutex *mutex);
