@@ -11,6 +11,19 @@
 #define CRHOFFSET 0x4
 #define BUFFERSIZE 128
 #define CRLOFFSET 0x0
+// capture compare
+#define CCM1OFFSET 0x18
+// enable
+#define CCEOFFSET 0x20
+#define GPIOABASE ((volatile unsigned char *)0x40010800)
+#define GPIOA_CRL (*((volatile unsigned long *)(GPIOABASE + CRLOFFSET)))
+#define AROFFSET 0x2C
+#define RCC_APB1ENR (*((volatile unsigned long *)0x4002101C))
+#define CR1OFFSET 0x0
+// counter
+#define CEN (1 << 0)
+// 72MHZ / 20000 - 1 = 3599 (20kHZ frequency on the motor)
+#define ARRVALPWM 3599
 
 void task1Handle(void);
 void task2Handle(void);
