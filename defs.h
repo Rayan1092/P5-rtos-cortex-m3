@@ -10,6 +10,7 @@
 // configuration reg high offset
 #define CRHOFFSET 0x4
 #define BUFFERSIZE 128
+#define CRLOFFSET 0x0
 
 void task1Handle(void);
 void task2Handle(void);
