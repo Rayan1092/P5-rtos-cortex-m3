@@ -19,6 +19,7 @@
 #define GPIOA_CRL (*((volatile unsigned long *)(GPIOABASE + CRLOFFSET)))
 #define AROFFSET 0x2C
 #define RCC_APB1ENR (*((volatile unsigned long *)0x4002101C))
+#define RCC_APB2ENR (*(volatile unsigned long *)0x40021018)
 #define CR1OFFSET 0x0
 // counter
 #define CEN (1 << 0)

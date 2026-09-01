@@ -27,7 +27,6 @@
 #define PLL 0x2
 // SW status
 #define SWS (0x3 << 2)
-#define RCC_APB2ENR (*(volatile unsigned long *)0x40021018)
 // enable gpio port A, C and USART1
 #define IOPAEN (1 << 2)
 #define IOPCEN (1 << 4)
