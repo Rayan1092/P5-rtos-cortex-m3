@@ -1,3 +1,4 @@
+#include "defs.h"
 extern unsigned long _estack;
 
 void hardFaultHandler(void);
@@ -5,6 +6,7 @@ void start_up(void);
 void pendSVHandle(void);
 void sysTickHandler(void);
 void usartTXEHandle(void);
+void tim4ISR(void);
 
 __attribute__((section(".isr_vector"))) void (*vectorTable[54])(void) = {
     [0] = (void (*)(void))&_estack,
@@ -12,4 +14,5 @@ __attribute__((section(".isr_vector"))) void (*vectorTable[54])(void) = {
     [3] = hardFaultHandler,
     [14] = pendSVHandle,
     [15] = sysTickHandler,
+    [TIM4VS] = tim4ISR,
     [53] = usartTXEHandle};

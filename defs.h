@@ -25,6 +25,8 @@
 #define CEN (1 << 0)
 // 72MHZ / 20000 - 1 = 3599 (20kHZ frequency on the motor)
 #define ARRVALPWM 3599
+// NVIC allowing uart peripheral through (interupt set enable reg0)
+#define ISER0 (*(volatile unsigned long *)0xE000E100)
 
 void task1Handle(void);
 void task2Handle(void);
@@ -83,3 +85,10 @@ void displayHex(unsigned long num);
 void taskInit(struct Task *task);
 void enableInterrupts(void);
 void disableInterrupts(void);
+void tim4Init(void);
+void tim4ISR(void);
+
+// IRQ TIM4
+#define IRQT4 30
+// TIM4 Vector Slot
+#define TIM4VS (IRQT4 + 16)

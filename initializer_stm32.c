@@ -66,5 +66,6 @@ void initializer(void)
     ledInit();
     usartInit();
     sysTickInit();
+    tim4Init();
     main_to_task(taskarr[0].taskHandle);
 }
