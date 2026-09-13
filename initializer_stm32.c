@@ -67,5 +67,7 @@ void initializer(void)
     usartInit();
     sysTickInit();
     tim4Init();
+    I2CInit();
+    INA228Init();
     main_to_task(taskarr[0].taskHandle);
 }

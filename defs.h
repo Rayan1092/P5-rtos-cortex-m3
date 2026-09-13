@@ -45,6 +45,8 @@ void usartTXEHandle(void);
 void usartInit(void);
 void clockInit(void);
 void ledInit(void);
+unsigned long INA228Init(void);
+void I2CInit(void);
 
 enum taskState
 {

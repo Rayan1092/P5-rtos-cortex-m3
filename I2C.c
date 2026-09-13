@@ -60,9 +60,11 @@
 // the resolution were measuring at (3A MAX, 19bits (524,287 max val)) hence 3/524287
 #define CURRENT_LSB 0.000005722
 // TI formula 13107.2 x 10^6 x CURRENT_LSB x Rshunt
-#define ShuntVal 750
+#define SHUNTVAL 750
+// shunt callibration
+#define SHUNT_CAL 0x02
 
-void i2cInit(void)
+void I2CInit(void)
 {
 
     RCC_APB1ENR |= I2CEN;
@@ -383,4 +385,18 @@ void writeReg(unsigned char addr, unsigned char regNum, unsigned long data, unsi
 
     *status = 1;
     return;
+}
+
+unsigned long INA228Init(void)
+{
+    unsigned long status = 0;
+
+    writeReg(INAADDR, SHUNT_CAL, SHUNTVAL, 2, &status);
+
+    if (status == 0)
+    {
+        displayLabel("Shunt value write failure!");
+        return 0;
+    }
+    return 1;
 }
