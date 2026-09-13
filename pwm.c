@@ -25,6 +25,7 @@
 #define CCR2OFFSET 0x38
 #define TIM2_CCR1 (*((volatile unsigned long *)(TIM2BASE + CCR1OFFSET)))
 #define TIM2_CCR2 (*((volatile unsigned long *)(TIM2BASE + CCR2OFFSET)))
+#define CR1OFFSET 0x0
 
 void pwmInit(void)
 {

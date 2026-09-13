@@ -32,6 +32,7 @@
 // counter
 #define CNTOFFSET 0x24
 #define TIM3_CNTR (*((volatile unsigned long *)(TIM3BASE + CNTOFFSET)))
+#define CR1OFFSET 0x0
 
 void encoderInit(void)
 {
