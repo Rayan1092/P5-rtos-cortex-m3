@@ -47,6 +47,10 @@ void clockInit(void);
 void ledInit(void);
 unsigned long INA228Init(void);
 void I2CInit(void);
+void encoderInit(void);
+void pwmInit(void);
+unsigned short readEncoder(void);
+void setDutyC(unsigned long val, unsigned long direction);
 
 enum taskState
 {

@@ -69,5 +69,7 @@ void initializer(void)
     tim4Init();
     I2CInit();
     INA228Init();
+    pwmInit();
+    encoderInit();
     main_to_task(taskarr[0].taskHandle);
 }

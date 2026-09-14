@@ -1,25 +1,45 @@
 #include "defs.h"
 #define HIGHEST_PRIORITY 0
+// 1000revmin * 440 counts / 60 = 7333, 7333 / (1000/ 10) = 73
+#define SP ((signed short)35)
+// 256 since it gives us 1/256 resoultion as well as 2^8
+#define SCALE 256
+// represents 0.5, (0.5 * 256) = 128 + multiplied by  3599/73 to scale interms of pwm
+#define Kp (128 * (3599 / 73))
 
 void yeild(void)
 {
     ICSR |= PENDSVSET;
 }
 
+// PID task (100HZ)
 void task1Handle(void)
 {
-    int counter = 0;
-    int taken = 0;
     while (1)
     {
-        if (!taken)
-            mutexTake(&uartMutex);
+        signed long correction = 0;
 
-        taken = 1;
-        sendChar('A');
-        if (counter >= 100)
-            mutexReturn(&uartMutex);
-        counter++;
+        static unsigned short prevVal = 0;
+        unsigned short encoderVal = readEncoder();
+
+        signed short speed = (signed short)(encoderVal - prevVal);
+
+        signed short error = SP - speed;
+        // 8 to reverse the scale
+        correction = ((Kp * error) >> 8);
+
+        if (correction > 3599)
+            correction = 3599;
+        else if (correction < 0)
+            correction = 0;
+
+        // hard-coded to forward for now
+        setDutyC(correction, 1);
+
+        prevVal = encoderVal;
+
+        runningTask->state = BLOCKEDT;
+        ICSR |= PENDSVSET;
     }
 }
 

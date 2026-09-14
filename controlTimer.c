@@ -22,8 +22,8 @@
 #define NVICEN (1 << IRQT4)
 // starts at 0 hence 72. 72,000,000 / 72 = 1,000,000 (main counter "+" every 1,0000,000 cycles, 1us)
 #define PSC 71
-// x * 0.000001  = 0.001 x = 1000 (0-999)
-#define ARR 999
+// x * 0.000001  = 0.01 so x = 10000 (0-9999)
+#define ARR 9999
 // Update Interupt Flag
 #define UIF (1 << 0)
 
